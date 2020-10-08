@@ -136,7 +136,7 @@ class MailPlugin implements ISearchPlugin {
 										'shareType' => IShare::TYPE_USER,
 										'shareWith' => $cloud->getUser(),
 									],
-									'shareWithDisplayNameUnique' => $contact['EMAIL'] !== null && $contact['EMAIL'] !== '' ? $contact['EMAIL'] : $cloud->getUser(),
+									'shareWithDisplayNameUnique' => !empty($emailAddress) ? $emailAddress : $cloud->getUser()
 
 								]];
 								$searchResult->addResultSet($userType, [], $singleResult);
@@ -172,7 +172,7 @@ class MailPlugin implements ISearchPlugin {
 										'shareType' => IShare::TYPE_USER,
 										'shareWith' => $cloud->getUser(),
 									],
-									'shareWithDisplayNameUnique' => $contact['EMAIL'] !== null && $contact['EMAIL'] !== '' ? $contact['EMAIL'] : $cloud->getUser(),
+									'shareWithDisplayNameUnique' => !empty($emailAddress) ? $emailAddress : $cloud->getUser()
 								];
 								continue;
 							}
