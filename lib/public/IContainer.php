@@ -57,9 +57,9 @@ interface IContainer extends ContainerInterface {
 	 * If a parameter is not registered in the container try to instantiate it
 	 * by using reflection to find out how to build the class
 	 * @param string $name the class name to resolve
-	 * @psalm-param class-string<T>|string $name
+	 * @psalm-param string|class-string<T> $name
 	 * @return \stdClass
-	 * @psalm-return T|mixed
+	 * @psalm-return mixed|T
 	 * @since 8.2.0
 	 * @deprecated 20.0.0 use \Psr\Container\ContainerInterface::get
 	 * @throws ContainerExceptionInterface if the class could not be found or instantiated
@@ -73,10 +73,10 @@ interface IContainer extends ContainerInterface {
 	 * @template T
 	 *
 	 * @param string $name
-	 * @psalm-param class-string<T>|string $name
+	 * @psalm-param string|class-string<T> $name
 	 * @param bool $autoload Should we try to autoload the service. If we are trying to resolve built in types this makes no sense for example
 	 * @return mixed
-	 * @psalm-return T|mixed
+	 * @psalm-return mixed|T
 	 * @throws ContainerExceptionInterface if the query could not be resolved
 	 * @throws QueryException if the query could not be resolved
 	 * @since 6.0.0
