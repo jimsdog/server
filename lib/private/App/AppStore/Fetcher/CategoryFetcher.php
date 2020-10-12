@@ -30,6 +30,7 @@ namespace OC\App\AppStore\Fetcher;
 use OC\Files\AppData\Factory;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\Http\Client\IClientService;
+use OCP\ICacheFactory;
 use OCP\IConfig;
 use OCP\ILogger;
 
@@ -45,13 +46,16 @@ class CategoryFetcher extends Fetcher {
 								IClientService $clientService,
 								ITimeFactory $timeFactory,
 								IConfig $config,
-								ILogger $logger) {
+								ILogger $logger,
+								ICacheFactory $cacheFactory
+	) {
 		parent::__construct(
 			$appDataFactory,
 			$clientService,
 			$timeFactory,
 			$config,
-			$logger
+			$logger,
+			$cacheFactory
 		);
 		$this->fileName = 'categories.json';
 		$this->endpointName = 'categories.json';

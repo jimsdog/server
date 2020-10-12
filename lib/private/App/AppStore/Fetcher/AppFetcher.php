@@ -35,6 +35,7 @@ use OC\App\CompareVersion;
 use OC\Files\AppData\Factory;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\Http\Client\IClientService;
+use OCP\ICacheFactory;
 use OCP\IConfig;
 use OCP\ILogger;
 
@@ -59,13 +60,16 @@ class AppFetcher extends Fetcher {
 								ITimeFactory $timeFactory,
 								IConfig $config,
 								CompareVersion $compareVersion,
-								ILogger $logger) {
+								ILogger $logger,
+								ICacheFactory $cacheFactory
+	) {
 		parent::__construct(
 			$appDataFactory,
 			$clientService,
 			$timeFactory,
 			$config,
-			$logger
+			$logger,
+			$cacheFactory
 		);
 
 		$this->fileName = 'apps.json';

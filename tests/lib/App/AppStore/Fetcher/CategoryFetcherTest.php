@@ -22,6 +22,7 @@
 namespace Test\App\AppStore\Fetcher;
 
 use OC\App\AppStore\Fetcher\CategoryFetcher;
+use OCP\ICacheFactory;
 
 class CategoryFetcherTest extends FetcherBase {
 	protected function setUp(): void {
@@ -29,12 +30,15 @@ class CategoryFetcherTest extends FetcherBase {
 		$this->fileName = 'categories.json';
 		$this->endpoint = 'https://apps.nextcloud.com/api/v1/categories.json';
 
+		$cacheFactory = $this->createMock(ICacheFactory::class);
+
 		$this->fetcher = new CategoryFetcher(
 			$this->appDataFactory,
 			$this->clientService,
 			$this->timeFactory,
 			$this->config,
-			$this->logger
+			$this->logger,
+			$cacheFactory
 		);
 	}
 

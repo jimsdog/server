@@ -37,6 +37,8 @@ use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\Files\IAppData;
 use OCP\Files\NotFoundException;
 use OCP\Http\Client\IClientService;
+use OCP\ICache;
+use OCP\ICacheFactory;
 use OCP\IConfig;
 use OCP\ILogger;
 
@@ -61,6 +63,8 @@ abstract class Fetcher {
 	protected $version;
 	/** @var string */
 	protected $channel;
+	/** @var ICache */
+	private $cache;
 
 	/**
 	 * @param Factory $appDataFactory
@@ -73,12 +77,15 @@ abstract class Fetcher {
 								IClientService $clientService,
 								ITimeFactory $timeFactory,
 								IConfig $config,
-								ILogger $logger) {
+								ILogger $logger,
+								ICacheFactory $cacheFactory
+	) {
 		$this->appData = $appDataFactory->get('appstore');
 		$this->clientService = $clientService;
 		$this->timeFactory = $timeFactory;
 		$this->config = $config;
 		$this->logger = $logger;
+		$this->cache = $cacheFactory->createDistributed('appstore-fetcher');
 	}
 
 	/**
@@ -91,6 +98,9 @@ abstract class Fetcher {
 	 */
 	protected function fetch($ETag, $content) {
 		$appstoreenabled = $this->config->getSystemValue('appstoreenabled', true);
+		if ((bool)$this->cache->get('lastFetchFailure')) {
+			return [];
+		}
 
 		if (!$appstoreenabled) {
 			return [];
@@ -107,7 +117,13 @@ abstract class Fetcher {
 		}
 
 		$client = $this->clientService->newClient();
-		$response = $client->get($this->getEndpoint(), $options);
+		try {
+			$response = $client->get($this->getEndpoint(), $options);
+		} catch (ConnectException $e) {
+			// Only retry app store fetching once every 5 minutes when failing
+			$this->cache->set('lastFetchFailure', true, 300);
+			throw $e;
+		}
 
 		$responseJson = [];
 		if ($response->getStatusCode() === Http::STATUS_NOT_MODIFIED) {
@@ -175,6 +191,9 @@ abstract class Fetcher {
 		// Refresh the file content
 		try {
 			$responseJson = $this->fetch($ETag, $content, $allowUnstable);
+			if (empty($responseJson['data'])) {
+				return [];
+			}
 			// Don't store the apps request file
 			if ($allowUnstable) {
 				return $responseJson['data'];

@@ -33,6 +33,7 @@ use OCP\Files\SimpleFS\ISimpleFolder;
 use OCP\Http\Client\IClient;
 use OCP\Http\Client\IClientService;
 use OCP\Http\Client\IResponse;
+use OCP\ICacheFactory;
 use OCP\IConfig;
 use OCP\ILogger;
 use Test\TestCase;
@@ -1849,6 +1850,7 @@ EJL3BaQAQaASSsvFrcozYxrQG4VzEg==
 		$this->config = $this->createMock(IConfig::class);
 		$this->compareVersion = new CompareVersion();
 		$this->logger = $this->createMock(ILogger::class);
+		$cacheFactory = $this->createMock(ICacheFactory::class);
 
 		$this->fetcher = new AppFetcher(
 			$factory,
@@ -1856,7 +1858,8 @@ EJL3BaQAQaASSsvFrcozYxrQG4VzEg==
 			$this->timeFactory,
 			$this->config,
 			$this->compareVersion,
-			$this->logger
+			$this->logger,
+			$cacheFactory
 		);
 	}
 
