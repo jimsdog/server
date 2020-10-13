@@ -18,6 +18,8 @@ jobs:
               with:
                 php-version: 7.4
                 coverage: none
+            - name: Composer install
+              run: composer i
             - name: Psalm
               run: composer run psalm -- --monochrome --no-progress --output-format=text --update-baseline || ( git diff && exit 1 )
             - name: Show potential changes in Psalm baseline
